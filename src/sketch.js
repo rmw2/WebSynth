@@ -191,15 +191,19 @@ function playNote(midiNote) {
   if (sawAmp > 0) {
     sawEnv.triggerAttack();
   }
+
   if (sqrAmp > 0) {
     sqrEnv.triggerAttack();
   }
+
   if (triAmp > 0) {
     triEnv.triggerAttack();
   }
+
   if (subAmp > 0) {
     subEnv.triggerAttack();
   }
+
   if (nseAmp > 0) {
     nseEnv.triggerAttack();
   }
@@ -441,7 +445,7 @@ function keyTyped() {
       }
     }
   }
-  
+
   // Increments / Decrements Octave slider if 'Z' or 'X' are pressed
   modifyOctave(lowercaseKey);
 }
@@ -466,20 +470,20 @@ function windowResized() {
 // Increments or Decrements octave based on key
 function modifyOctave(keyPressed) {
     var valToAdd = 0;
-    
+
     if(keyPressed === INCREMENT_OCTAVE) {
         valToAdd = 1;
     } else if (keyPressed === DECREMENT_OCTAVE) {
         valToAdd = -1;
-    } 
-   
+    }
+
     var modVal = octaveSlider.value() + valToAdd;
-    
+
     if (modVal < 0) {
         modVal = 0;
     } else if (modVal > 4) {
         modVal = 4;
     }
-    
+
     octaveSlider.value(modVal);
 }
