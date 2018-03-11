@@ -1,0 +1,31 @@
+{
+  "name": "websynth",
+  "version": "0.1.0",
+  "description": "A subtractive synthesizer in the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmw2/WebSynth.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/rmw2/WebSynth/issues"
+  },
+  "homepage": "https://github.com/rmw2/WebSynth#readme",
+  "dependencies": {
+    "css-loader": "^0.28.10",
+    "p5": "^0.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "style-loader": "^0.20.3",
+    "webpack-cleanup-plugin": "^0.5.1"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.0.6",
+    "webpack": "^4.1.1"
+  }
+}
