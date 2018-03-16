@@ -1,0 +1,64 @@
+input {
+    outline: none;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+/* Sliders and things */
+.slider-box {
+    display: inline-block;
+}
+
+.slider-box.vertical {
+    width: 3em;
+    height: 8em;
+}
+
+label {
+    display: inline-block;
+}
+
+/* Do the rotation */
+input[orient="vertical"], label.vertical {
+    width: 8em;
+    height: 1em;
+    transform-origin: bottom center;
+    transform: rotate(-90deg) translate(-1em, -2em);
+}
+
+.gain {
+    color: #3a9;
+}
+
+/* Buttons and things */
+button.control-button {
+    box-shadow: none;
+    background-color: transparent;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 0.25em;
+    color: #fff;
+    cursor: pointer;
+}
+
+button.control-button:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+#octave {
+    height: 2em;
+    margin: auto;
+}
+
+#octave-value {
+    text-align: center;
+    color: red;
+    font-size: 2em;
+    width: 2em;
+    font-family: monospace;
+}
+
+.octave-button {
+    height: 100%;
+    font-size: 1.5em;
+}

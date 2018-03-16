@@ -1,0 +1,37 @@
+#root {
+    height:  100%;
+}
+
+#app {
+    display: grid;
+    height: 100%;
+
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    grid-template-areas:
+        "name . gain gain"
+        ". . . lfo"
+        "keyboard keyboard osc osc";
+
+    align-items: stretch;
+    justify-items: stretch;
+}
+
+#keyboard-box {
+    grid-area: keyboard;
+    flex-direction: column;
+}
+
+#name-box {
+    grid-area: name;
+}
+
+#gain-box {
+    grid-area: gain;
+}
+
+.container {
+    display: flex;
+    padding: 0.5em;
+}
