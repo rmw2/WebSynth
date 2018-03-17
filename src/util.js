@@ -1,7 +1,6 @@
 /**
  * util.js
  */
-'use strict'
 
 // Some hacky stuff for music
 const BLACK_KEYS = [1, 3, 6, 8, 10]

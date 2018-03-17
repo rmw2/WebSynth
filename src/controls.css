@@ -6,6 +6,10 @@ input {
     background-color: transparent;
 }
 
+button {
+    outline: none;
+}
+
 /* Sliders and things */
 .slider-box, .control-knobs {
     display: inline-block;

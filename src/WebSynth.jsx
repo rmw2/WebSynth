@@ -150,7 +150,7 @@ class WebSynth extends React.Component {
     voices[which] = val;
     this.setState({voices})
 
-    this.oscillators[which].count.value = val;
+    this.oscillators[which].count = val;
   }
 
   adjustSpread(val, which) {
@@ -159,7 +159,7 @@ class WebSynth extends React.Component {
     spread[which] = val;
     this.setState({spread});
 
-    this.oscillators[which].spread.value = val;
+    this.oscillators[which].spread = val;
   }
 
   /**
@@ -225,19 +225,23 @@ class WebSynth extends React.Component {
                 <div className="control-knobs">
                   <div className="control-voices">
                     <span className="knob-label">voices</span>
-                    <button className="control-button voice-down">&#9001;</button>
+                    <button className="control-button voice-down"
+                      onClick={() => this.adjustVoices(voices[i] - 1, i)}>&#9001;</button>
                     <input className="value"
-                      onChange={(val) => this.adjustVoices(val, i)}
+                      onChange={(e) => this.adjustVoices(e.target.value, i)}
                       value={voices[i]}/>
-                    <button className="control-button voice-up">&#9002;</button>
+                    <button className="control-button voice-up"
+                      onClick={() => this.adjustVoices(voices[i] + 1, i)}>&#9002;</button>
                   </div>
                   <div className="control-spread">
                     <span className="knob-label">spread</span>
-                    <button className="control-button spread-down">&#9001;</button>
+                    <button className="control-button spread-down"
+                      onClick={() => this.adjustSpread(spread[i] - 1, i)}>&#9001;</button>
                     <input className="value"
-                      onChange={(val) => this.adjustSpread(val, i)}
+                      onChange={(e) => this.adjustSpread(e.target.value, i)}
                       value={spread[i]}/>
-                    <button className="control-button spread-up">&#9002;</button>
+                    <button className="control-button spread-up"
+                      onClick={() => this.adjustSpread(spread[i] + 1, i)}>&#9002;</button>
                   </div>
                 </div>
               )}
