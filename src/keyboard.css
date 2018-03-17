@@ -17,6 +17,8 @@
     width: 1.5em;
     margin: 0 -0.75em;
     background-color: #000;
+
+    z-index: 2;
 }
 
 .keyboard-key.white {
@@ -25,9 +27,12 @@
     background-color: #fff;
 }
 
-/* lift 'up' on hover */
-.keyboard-key:hover {
+.keyboard-key.white:hover {
     background-color: #eee;
+}
+
+.keyboard-key.black:hover {
+    background-color: #222;
 }
 
 .keyboard-key:active {

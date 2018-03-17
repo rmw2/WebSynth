@@ -10,25 +10,25 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
 
     grid-template-areas:
-        "name . gain gain"
-        ". . . lfo"
-        "keyboard keyboard osc osc";
+        "name controls controls controls"
+        "keyboard keyboard . lfo"
+        ". . osc osc";
 
     align-items: stretch;
     justify-items: stretch;
 }
 
-#keyboard-box {
+#keyboard-area {
     grid-area: keyboard;
     flex-direction: column;
 }
 
-#name-box {
+#name-area {
     grid-area: name;
 }
 
-#gain-box {
-    grid-area: gain;
+#controls-area {
+    grid-area: controls;
 }
 
 .container {

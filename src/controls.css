@@ -1,3 +1,4 @@
+/* Overrides */
 input {
     outline: none;
     border: none;
@@ -6,7 +7,7 @@ input {
 }
 
 /* Sliders and things */
-.slider-box {
+.slider-box, .control-knobs {
     display: inline-block;
 }
 
@@ -20,7 +21,9 @@ label {
 }
 
 /* Do the rotation */
-input[orient="vertical"], label.vertical {
+input[orient="vertical"] {
+    appearance: none;
+
     width: 8em;
     height: 1em;
     transform-origin: bottom center;
@@ -28,7 +31,9 @@ input[orient="vertical"], label.vertical {
 }
 
 .gain {
-    color: #3a9;
+    background-color: #3a9;
+    border-radius: 0.5em;
+    border: 1px solid #aaa;
 }
 
 /* Buttons and things */
@@ -45,17 +50,28 @@ button.control-button:hover {
     background-color: rgba(0,0,0,0.1);
 }
 
+/* text inputs and labels */
+.knob-label {
+    font-size: 0.5em;
+    color: #aaa;
+}
+
+input.value {
+    text-align: center;
+    color: red;
+    font-family: monospace;
+    width: 2em;
+}
+
+
+/* Specific controls */
 #octave {
     height: 2em;
     margin: auto;
 }
 
 #octave-value {
-    text-align: center;
-    color: red;
     font-size: 2em;
-    width: 2em;
-    font-family: monospace;
 }
 
 .octave-button {

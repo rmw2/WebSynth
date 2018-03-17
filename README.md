@@ -1,5 +1,5 @@
-# WebSynth
-Under active development: A subtractive synthesizer in your browser! Developed in JavaScript using ~~p5.js~~ Tone.js and React! This is a fork of JoshuaStorm/WebSynth
+# WebSynth 2.0
+Under active development: A subtractive synthesizer in your browser! Developed in JavaScript using ~~p5.js~~ **Tone.js** and **React**! This is a fork of JoshuaStorm/WebSynth
 
 # Contributing
 

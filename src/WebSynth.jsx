@@ -1,6 +1,8 @@
 import React from 'react';
 import Tone from 'tone';
 
+import {isBlackKey, midiToFreq} from './util';
+
 import './style.css';
 import './layout.css';
 import './keyboard.css';
@@ -23,13 +25,8 @@ const KEY_TO_MIDI = {
 
 // Default filter props
 const FILTER_DEFAULT = { Q: 0, freq: 1000 };
-
-/**
- * Beacuse importing sound methods from is proving difficult...
- */
-function midiToFreq(m) {
-  return 440 * Math.pow(2, (m - 69) / 12);
-}
+const SPREAD_DEFAULT = 40; // cents
+const VOICES_DEFAULT = 3;
 
 /**
  * @classdesc
@@ -48,7 +45,9 @@ class WebSynth extends React.Component {
       },
       octave: 4,
       gains: [...OSCS.map(() => 1), 0],
-      filterProps: [...OSCS.map(() => FILTER_DEFAULT), FILTER_DEFAULT]
+      filterProps: [...OSCS.map(() => FILTER_DEFAULT), FILTER_DEFAULT],
+      voices: [...OSCS.map(() => VOICES_DEFAULT)],
+      spread: [...OSCS.map(() => SPREAD_DEFAULT)]
     };
 
     // Initialize filter, envelopes, and oscillators
@@ -89,14 +88,6 @@ class WebSynth extends React.Component {
   }
 
   /**
-   * Handler for keyUp events.  Stop playing a note if a note was being
-   */
-  handleKeyUp(event) {
-    if (event.key in KEY_TO_MIDI)
-      this.endNote();
-  }
-
-  /**
    * Dispatcher for keyboard events
    */
   handleKeyDown(event) {
@@ -107,6 +98,14 @@ class WebSynth extends React.Component {
     } else if (event.key === 'x') {
       this.setOctave(this.state.octave + 1);
     }
+  }
+
+  /**
+   * Cleanup for keyboard events.  Stop playing a note if a note was being played.
+   */
+  handleKeyUp(event) {
+    if (event.key in KEY_TO_MIDI)
+      this.endNote();
   }
 
   /**
@@ -129,7 +128,6 @@ class WebSynth extends React.Component {
   }
 
   adjustGain(val, which) {
-    console.log(`Adjusting gain for ${which} to ${val}`);
     let gains = this.state.gains.slice();
 
     // Awkward to manage state gains and Node gains...
@@ -146,16 +144,34 @@ class WebSynth extends React.Component {
     this.gains[which].gain.value = val; // update WebAudio node (for sound)
   }
 
+  adjustVoices(val, which) {
+    // TODO: VALIDATE INPUT
+    let voices = this.state.voices.slice();
+    voices[which] = val;
+    this.setState({voices})
+
+    this.oscillators[which].count.value = val;
+  }
+
+  adjustSpread(val, which) {
+    // TODO: VALIDATE INPUT
+    let spread = this.state.spread.slice();
+    spread[which] = val;
+    this.setState({spread});
+
+    this.oscillators[which].spread.value = val;
+  }
+
   /**
    * Bounds check and update the current octave.
    */
   setOctave(octave) {
-    if (MIN_OCTAVE < octave && octave < MAX_OCTAVE)
+    if (MIN_OCTAVE <= octave && octave <= MAX_OCTAVE)
       this.setState({octave});
   }
 
   render() {
-    const {adsr, octave, gains} = this.state;
+    const {adsr, octave, gains, voices, spread} = this.state;
 
     // Sneakily "render" the audio elements here ??
     //      -> see above discussion
@@ -165,10 +181,10 @@ class WebSynth extends React.Component {
 
     return (
       <div id="app">
-        <div id="name" className="container">
-          websynth
+        <div id="name-area" className="container">
+          <span id="title">websynth</span><span id="version">0.2</span>
         </div>
-        <div id="keyboard-box" className="container">
+        <div id="keyboard-area" className="container">
           <div id="octave">
             <span className="label">octave:</span>
             <button id="octave-down"
@@ -186,23 +202,48 @@ class WebSynth extends React.Component {
           </div>
           <div id="keyboard">
           {Object.values(KEY_TO_MIDI).map((idx) =>
-            <div className="keyboard-key" key={idx}
+            <div className={`keyboard-key ${isBlackKey(idx) ? 'black' : 'white'}`} key={idx}
               onMouseDown={() => this.playNote(idx + 12*octave)}
               onMouseUp={() => this.endNote()} />
           )}
           </div>
         </div>
-        <div id="gain-box" className="container">
-        <span className="label">them gainz</span>
-        {gains.map((g,i) =>
-          <RangeSlider key={i}
-            className="gain"
-            name={OSCS[i] || 'noise'}
-            value={g}
-            min={0} max={1} step={0.01}
-            orient="vertical"
-            onChange={(val) => this.adjustGain(val, i)}/>
-        )}
+        <div id="controls-area" className="container">
+          {/* TODO: factor this out somewhere ?? */}
+          {gains.map((g,i) =>
+            <div className="control-group">
+              <RangeSlider key={i}
+                className="gain"
+                outerClass="control-gain"
+                value={g}
+                min={0} max={1} step={0.01}
+                orient="vertical"
+                onChange={(val) => this.adjustGain(val, i)}/>
+              {(i === NOISE) ? (
+                null
+              ) : (
+                <div className="control-knobs">
+                  <div className="control-voices">
+                    <span className="knob-label">voices</span>
+                    <button className="control-button voice-down">&#9001;</button>
+                    <input className="value"
+                      onChange={(val) => this.adjustVoices(val, i)}
+                      value={voices[i]}/>
+                    <button className="control-button voice-up">&#9002;</button>
+                  </div>
+                  <div className="control-spread">
+                    <span className="knob-label">spread</span>
+                    <button className="control-button spread-down">&#9001;</button>
+                    <input className="value"
+                      onChange={(val) => this.adjustSpread(val, i)}
+                      value={spread[i]}/>
+                    <button className="control-button spread-up">&#9002;</button>
+                  </div>
+                </div>
+              )}
+              <div className="control-label">{OSCS[i] || 'noise'}</div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -214,7 +255,7 @@ class WebSynth extends React.Component {
  */
 const RangeSlider = ({onChange, name, outerClass, ...props}) => (
   <div className={`slider-box ${outerClass || ''} ${props.orient || ''}`}>
-    <label className={`slider-label ${props.orient || ''}`}>{name}</label>
+    <label className={`slider-label`}>{name}</label>
     <input type="range" {...props}
       onChange={(event) => onChange(parseFloat(event.target.value))} />
   </div>
