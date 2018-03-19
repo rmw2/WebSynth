@@ -10,7 +10,21 @@ button {
     outline: none;
 }
 
-/* Sliders and things */
+
+/**********************************************************************
+ * Groups and boxes
+ *********************************************************************/
+#controls-area {
+
+}
+
+.control-group {
+    border-right: 1px solid rgba(0,0,0,0.5);
+}
+
+/**********************************************************************
+ * Sliders and things
+ *********************************************************************/
 .slider-box, .control-knobs {
     display: inline-block;
 }
@@ -55,6 +69,10 @@ button.control-button:hover {
 }
 
 /* text inputs and labels */
+.control-label {
+    text-align: center;
+}
+
 .knob-label {
     font-size: 0.5em;
     color: #aaa;
