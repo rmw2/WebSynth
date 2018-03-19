@@ -1,7 +1,9 @@
 import React from 'react';
 import Tone from 'tone';
 
+import Waveform from './Waveform';
 import {isBlackKey, midiToFreq} from './util';
+import {DEFAULT} from './presets';
 
 import './style.css';
 import './layout.css';
@@ -23,11 +25,6 @@ const KEY_TO_MIDI = {
   k: 12
 };
 
-// Default filter props
-const FILTER_DEFAULT = { Q: 0, freq: 1000 };
-const SPREAD_DEFAULT = 40; // cents
-const VOICES_DEFAULT = 3;
-
 /**
  * @classdesc
  * WebSynth is a UI component for Controlling a subtractive synthesizer
@@ -36,31 +33,20 @@ class WebSynth extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      adsr: {
-        attack: 0.1,
-        decay: 0.2,
-        sustain: 1.0,
-        release: 0.8
-      },
-      octave: 4,
-      gains: [...OSCS.map(() => 1), 0],
-      filterProps: [...OSCS.map(() => FILTER_DEFAULT), FILTER_DEFAULT],
-      voices: [...OSCS.map(() => VOICES_DEFAULT)],
-      spread: [...OSCS.map(() => SPREAD_DEFAULT)]
-    };
+    // Initialize with the default state imported from presets.js
+    this.state = DEFAULT;
 
     // Initialize filter, envelopes, and oscillators
     this.env = new Tone.AmplitudeEnvelope(this.state.adsr).toMaster();
 
-    // Intialize individual gains for each osc and the noise
-    this.gains = OSCS.map(o => new Tone.Gain().connect(this.env));
-    this.gains[NOISE] = new Tone.Gain(0).connect(this.env);
+    // Intialize individual gain for each osc and the noise
+    this.gain = OSCS.map(o => new Tone.Gain().connect(this.env));
+    this.gain[NOISE] = new Tone.Gain(0).connect(this.env);
 
     // Initialize filters for each gain
-    this.filters = this.gains.map((_,i) => new Tone.Filter().connect(this.gains[i]));
+    this.filters = this.gain.map((_,i) => new Tone.Filter().connect(this.gain[i]));
 
-    // Intiialize the oscillators and connect them to their gains
+    // Intiialize the oscillators and connect them to their gain
     this.oscillators = OSCS.map((o, i) =>
       new Tone.FatOscillator(440, o).connect(this.filters[i]).start());
 
@@ -128,9 +114,9 @@ class WebSynth extends React.Component {
   }
 
   adjustGain(val, which) {
-    let gains = this.state.gains.slice();
+    let gain = this.state.gain.slice();
 
-    // Awkward to manage state gains and Node gains...
+    // Awkward to manage state gain and Node gain...
     // Can nodes live on state? unclear
     // THOUGHT: maybe have the audio params get updated in the render method??
     //          that way it's kinda like the state of the audio is being rendered
@@ -138,10 +124,10 @@ class WebSynth extends React.Component {
     // ISSUE: this is a lot of computation to do for every update, i.e. every param
     //        is reset with every update rather than just the param that changes...
 
-    gains[which] = val;                 // update state (for ui)
-    this.setState({gains});
+    gain[which] = val;                 // update state (for ui)
+    this.setState({gain});
 
-    this.gains[which].gain.value = val; // update WebAudio node (for sound)
+    this.gain[which].gain.value = val; // update WebAudio node (for sound)
   }
 
   adjustVoices(val, which) {
@@ -171,7 +157,7 @@ class WebSynth extends React.Component {
   }
 
   render() {
-    const {adsr, octave, gains, voices, spread} = this.state;
+    const {adsr, octave, gain, voices, spread} = this.state;
 
     // Sneakily "render" the audio elements here ??
     //      -> see above discussion
@@ -210,8 +196,9 @@ class WebSynth extends React.Component {
         </div>
         <div id="controls-area" className="container">
           {/* TODO: factor this out somewhere ?? */}
-          {gains.map((g,i) =>
+          {gain.map((g,i) =>
             <div className="control-group">
+              <div className="control-label">{OSCS[i] || 'noise'}</div>
               <RangeSlider key={i}
                 className="gain"
                 outerClass="control-gain"
@@ -245,9 +232,11 @@ class WebSynth extends React.Component {
                   </div>
                 </div>
               )}
-              <div className="control-label">{OSCS[i] || 'noise'}</div>
             </div>
           )}
+        </div>
+        <div id="analyzer-area">
+          <Waveform />
         </div>
       </div>
     );
