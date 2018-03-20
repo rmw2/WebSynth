@@ -31,6 +31,10 @@
     grid-area: controls;
 }
 
+#analyzer-area {
+    grid-area: osc;
+}
+
 .container {
     display: flex;
     padding: 0.5em;
