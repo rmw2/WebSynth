@@ -33,8 +33,11 @@ class WebSynth extends React.Component {
   constructor(props) {
     super(props);
 
-    // Initialize with the default state imported from presets.js
+    // Initialize with the default audio state imported from presets.js
     this.state = DEFAULT;
+
+    // Set up other UI state
+    Object.assign(this.state, {});
 
     // Initialize filter, envelopes, and oscillators
     this.env = new Tone.AmplitudeEnvelope(this.state.adsr).toMaster();
@@ -197,7 +200,7 @@ class WebSynth extends React.Component {
         <div id="controls-area" className="container">
           {/* TODO: factor this out somewhere ?? */}
           {gain.map((g,i) =>
-            <div className="control-group">
+            <div key={OSCS[i] || 'noise'} className="control-group">
               <div className="control-label">{OSCS[i] || 'noise'}</div>
               <RangeSlider key={i}
                 className="gain"
